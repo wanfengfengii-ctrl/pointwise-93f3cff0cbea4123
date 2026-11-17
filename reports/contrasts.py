@@ -14,6 +14,9 @@ def compile_contrasts(trajectory, requests):
 
 
 def evaluate_contrasts(trajectory, contrasts):
+    # Reports only consume the frozen analysis: its representative estimates,
+    # retained unknown directions and complete joint covariance. They never
+    # re-infer the trajectory.
     statuses = classify_contrasts(trajectory, contrasts)
     estimates = tuple(dot(row, trajectory.estimates) if status == 'estimable' else None
                       for row, status in zip(contrasts, statuses))
@@ -24,7 +27,10 @@ def evaluate_contrasts(trajectory, contrasts):
             if statuses[i] != 'estimable' or statuses[j] != 'estimable':
                 row.append(None)
             else:
-                row.append(sum((left[r] * trajectory.covariance[r][r] * right[r]
-                                for r in range(len(left))), F(0)))
+                # Full bilinear form over the common trajectory errors; this
+                # keeps the shared-innovation cross terms of change contrasts.
+                row.append(sum((left[r] * trajectory.covariance[r][s] * right[s]
+                                for r in range(len(left))
+                                for s in range(len(right))), F(0)))
         covariance.append(tuple(row))
     return statuses, estimates, tuple(covariance)

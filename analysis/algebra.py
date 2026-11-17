@@ -26,7 +26,9 @@ def rref(matrix, columns=None):
         raise ValueError('ragged matrix')
     limit = width if columns is None else columns
     pivots = []
-    for c in range(limit):
+    # Eliminate coefficient columns first; augmented right-hand-side columns
+    # are reduced afterwards so every RHS is fully carried to pivot rows.
+    for c in range(width):
         p = next((i for i in range(len(pivots), len(a)) if a[i][c]), None)
         if p is None:
             continue
@@ -38,7 +40,8 @@ def rref(matrix, columns=None):
             if i != r and a[i][c]:
                 scale = a[i][c]
                 a[i] = [x - scale * y for x, y in zip(a[i], a[r])]
-        pivots.append(c)
+        if c < limit:
+            pivots.append(c)
         if len(pivots) == len(a):
             break
     return a, pivots

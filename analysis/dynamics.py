@@ -9,6 +9,10 @@ class TrajectoryDesign:
     observation_matrix: tuple
     observations: tuple
     target_matrix: tuple
+    # Independent variance of every latent coordinate. The two fixed initial
+    # level/slope coordinates carry zero (no finite prior); every stochastic
+    # LDL coordinate and every noisy measurement carries its strictly positive
+    # variance, since y = H theta has observation covariance H diag(weights) H'.
     weights: tuple
     latent_ids: tuple
 
@@ -37,6 +41,11 @@ def build_trajectory_design(cohort, targets):
     earliest = min((r.time for r in cohort.members), default=model.knots[0])
     if any(t < earliest or t < model.knots[0] or t > model.knots[-1] for t in targets):
         raise ValueError('target outside observation/model support')
+    # Latent coordinate variances: zero for the fixed initial level and slope
+    # (unknown fixed parameters without a finite prior), the strictly positive
+    # independent LDL variances for process coordinates, and the measurement
+    # variance for noisy readings. Exact (zero-variance) readings stay at zero
+    # precision and enter only through the exact constraints.
     weights = [F(0), F(0)]
     identities = ['initial:level', 'initial:slope']
     events = []
