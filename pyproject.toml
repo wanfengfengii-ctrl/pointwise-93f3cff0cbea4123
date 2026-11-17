@@ -1,0 +1,6 @@
+[project]
+name = "riverbend-trajectory-archive"
+version = "1.0.0"
+description = "Exact rational monitoring trajectory archive"
+requires-python = ">=3.11"
+dependencies = []

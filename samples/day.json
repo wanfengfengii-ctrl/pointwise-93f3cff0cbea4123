@@ -1,0 +1,18 @@
+{
+  "model": {
+    "name": "river-day",
+    "rev": 1,
+    "unit": "mm",
+    "time_unit": "day",
+    "knots": ["0", "1", "2"],
+    "innovations": [[[0, 0], [0, 0]], [[0, 0], [0, 0]]]
+  },
+  "readings": [
+    {"measurement_id": "upstream-0", "rev": 1, "time": "0", "value": "2", "variance": "0", "unit": "mm", "time_unit": "day"},
+    {"measurement_id": "upstream-1", "rev": 1, "time": "1", "value": "5", "variance": "0", "unit": "mm", "time_unit": "day"}
+  ],
+  "correction": {"measurement_id": "upstream-1", "rev": 2, "time": "1", "value": "6", "variance": "0", "unit": "mm", "time_unit": "day"},
+  "targets": ["0", "1", "2"],
+  "requests": [{"label": "future-level", "terms": [["2", "1"]]}],
+  "expected": {"old": "8", "corrected": "10"}
+}
